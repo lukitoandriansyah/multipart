@@ -1,6 +1,6 @@
 package com.multipart.multipart.service.serviceImpl;
 
-import com.multipart.multipart.model.UploadeFile;
+import com.multipart.multipart.model.UploadFile;
 import com.multipart.multipart.repository.FileUploadRepository;
 import com.multipart.multipart.service.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     private FileUploadRepository fileUploadRepository;
 
     @Override
-    public void uplodToLocal(MultipartFile file) {
+    public void uploadToLocal(MultipartFile file) {
         try {
             byte[] data = file.getBytes();
 
@@ -35,14 +35,14 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
-    public UploadeFile uploadToDB(MultipartFile file) {
+    public UploadFile uploadToDB(MultipartFile file) {
 
-        UploadeFile uploadeFile = new UploadeFile();
+        UploadFile uploadFile = new UploadFile();
         try {
-            uploadeFile.setFileData(file.getBytes());
-            uploadeFile.setFileTypes(file.getContentType());
-            uploadeFile.setFileName(file.getOriginalFilename());
-            UploadeFile uploadFileToRet = fileUploadRepository.save(uploadeFile);
+            uploadFile.setFileData(file.getBytes());
+            uploadFile.setFileTypes(file.getContentType());
+            uploadFile.setFileName(file.getOriginalFilename());
+            UploadFile uploadFileToRet = fileUploadRepository.save(uploadFile);
             return uploadFileToRet;
 
         } catch (IOException e) {
@@ -52,8 +52,8 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
-    public Optional<UploadeFile> downloadFile(String fileId) {
-        Optional<UploadeFile> uploadeFileToRet = fileUploadRepository.findById(fileId);
-        return uploadeFileToRet;
+    public Optional<UploadFile> downloadFile(String fileId) {
+        Optional<UploadFile> uploadFileToRet = fileUploadRepository.findById(fileId);
+        return uploadFileToRet;
     }
 }

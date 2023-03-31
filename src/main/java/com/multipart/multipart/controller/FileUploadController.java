@@ -1,10 +1,9 @@
 package com.multipart.multipart.controller;
 
-import com.multipart.multipart.model.UploadeFile;
+import com.multipart.multipart.model.UploadFile;
 import com.multipart.multipart.response.FileUploadResponse;
 import com.multipart.multipart.service.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +25,7 @@ public class FileUploadController {
     @PostMapping("upload/local")
     public void uploadLocal(@RequestParam("file")MultipartFile multipartFile){
         //
-        fileUploadService.uplodToLocal(multipartFile);
+        fileUploadService.uploadToLocal(multipartFile);
     }
 
     //UploadFileto Db
@@ -34,21 +33,21 @@ public class FileUploadController {
     public FileUploadResponse uploadDB(@RequestParam("file")MultipartFile multipartFile){
         //
         FileUploadResponse response = new FileUploadResponse();
-        UploadeFile uploadeFile=fileUploadService.uploadToDB(multipartFile);
-        if (uploadeFile!=null){
+        UploadFile uploadFile =fileUploadService.uploadToDB(multipartFile);
+        if (uploadFile !=null){
            String downloadUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
                    .path("api/v1/download/")
-                   .path(uploadeFile.getFileId())
+                   .path(uploadFile.getFileId())
                    .toUriString();
            response.setDownloadUrl(downloadUrl);
-           response.setFileId(uploadeFile.getFileId());
-           response.setFileType(uploadeFile.getFileTypes());
-           response.setFileName(uploadeFile.getFileName());
+           response.setFileId(uploadFile.getFileId());
+           response.setFileType(uploadFile.getFileTypes());
+           response.setFileName(uploadFile.getFileName());
            response.setUploadStatus(true);
-           response.setMessage("Upload Succesfully");
+           response.setMessage("Upload Successfully");
            return response;
         }
-        response.setMessage("Oops 1 something went wrong. Please reupload");
+        response.setMessage("Oops 1 something went wrong. Please re-upload");
         return  response;
     }
 
@@ -60,7 +59,7 @@ public class FileUploadController {
 
     }*/
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileId){
-        Optional<UploadeFile> uploadFileToRet = fileUploadService.downloadFile(fileId);
+        Optional<UploadFile> uploadFileToRet = fileUploadService.downloadFile(fileId);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(uploadFileToRet.get().getFileTypes()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= "+uploadFileToRet.get().getFileName())
